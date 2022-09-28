@@ -11,50 +11,54 @@ import avatarFour from "../images/avatar4.png";
 import avatarFive from "../images/avatar5.png";
 import { useNavigate } from "react-router";
 import { AuthContext } from "../authContext";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 const LeaderBox = ({ text, name, number, image, avatar }) => {
   return (
     <div className="border-[#fff] w-full border p-4 rounded-2xl mt-4 border-opacity-50 flex justify-between items-center">
-      <div className="flex items-center gap-6">
-        <img src={image} alt="alt image" />
-        <p className="w-[364px]">{text}</p>
-        <div className="flex gap-2">
-          <img src={avatar} alt="alt image" />
-          <p>{name}</p>
+      <DndProvider backend={HTML5Backend}>
+        <div className="flex items-center gap-6">
+          <img src={image} alt="alt image" />
+          <p className="w-[364px]">{text}</p>
+          <div className="flex gap-2">
+            <img src={avatar} alt="alt image" />
+            <p>{name}</p>
+          </div>
         </div>
-      </div>
-      <div className="flex items-center gap-2">
-        <p>{number}</p>
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <g clip-path="url(#clip0_1735_1113)">
-            <path
-              d="M10.0085 3.75833V16.25"
-              stroke="#9BFF00"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M5.01929 8.76167L10.0001 3.74834L14.981 8.76167"
-              stroke="#9BFF00"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </g>
-          <defs>
-            <clipPath id="clip0_1735_1113">
-              <rect width="20" height="20" fill="white" />
-            </clipPath>
-          </defs>
-        </svg>
-      </div>
+        <div className="flex items-center gap-2">
+          <p>{number}</p>
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <g clip-path="url(#clip0_1735_1113)">
+              <path
+                d="M10.0085 3.75833V16.25"
+                stroke="#9BFF00"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M5.01929 8.76167L10.0001 3.74834L14.981 8.76167"
+                stroke="#9BFF00"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </g>
+            <defs>
+              <clipPath id="clip0_1735_1113">
+                <rect width="20" height="20" fill="white" />
+              </clipPath>
+            </defs>
+          </svg>
+        </div>
+      </DndProvider>
     </div>
   );
 };
@@ -75,7 +79,7 @@ const AdminDashboardPage = () => {
       <div className="flex justify-between">
         <h1 className="font-black text-5xl text-white">APP</h1>
         <div
-          className="w-32 bg-[#9BFF00] rounded-full flex justify-center items-center gap-2"
+          className="w-32 bg-[#9BFF00] rounded-full flex justify-center items-center gap-2 cursor-pointer"
           onClick={handleLogout}
         >
           <svg
