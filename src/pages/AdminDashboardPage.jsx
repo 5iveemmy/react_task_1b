@@ -9,6 +9,8 @@ import avatarTwo from "../images/avatar2.png";
 import avatarThree from "../images/avatar3.png";
 import avatarFour from "../images/avatar4.png";
 import avatarFive from "../images/avatar5.png";
+import { useNavigate } from "react-router";
+import { AuthContext } from "../authContext";
 
 const LeaderBox = ({ text, name, number, image, avatar }) => {
   return (
@@ -58,11 +60,24 @@ const LeaderBox = ({ text, name, number, image, avatar }) => {
 };
 
 const AdminDashboardPage = () => {
+  const { dispatch } = React.useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    dispatch({
+      type: "LOGOUT",
+    });
+    navigate("/admin/login");
+  };
+
   return (
     <div className="bg-black w-full text-opacity-50 text-white px-[8%] pt-10 pb-40">
       <div className="flex justify-between">
         <h1 className="font-black text-5xl text-white">APP</h1>
-        <div className="w-32 bg-[#9BFF00] rounded-full flex justify-center items-center gap-2">
+        <div
+          className="w-32 bg-[#9BFF00] rounded-full flex justify-center items-center gap-2"
+          onClick={handleLogout}
+        >
           <svg
             width="24"
             height="24"
