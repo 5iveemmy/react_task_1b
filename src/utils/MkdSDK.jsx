@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export default function MkdSDK() {
   this._baseurl = "https://reacttask.mkdlabs.com";
   this._project_id = "reacttask";
@@ -15,16 +17,27 @@ export default function MkdSDK() {
 
   this.login = async function (email, password, role) {
     //TODO
-    return axios
-      .post("https://reacttask.mkdlabs.com/v2/api/lambda/login", {
-        email,
-        password,
-        role,
-      })
+    const response = await axios
+      .post(
+        "https://reacttask.mkdlabs.com/v2/api/lambda/login",
+        {
+          email,
+          password,
+          role,
+        },
+        {
+          headers: {
+            "content-type": "application/json",
+            "x-project": base64Encode,
+          },
+        }
+      )
       .then((response) => {
         //store response.data in LocalStorage
         localStorage.setItem("token", response.data.token);
       });
+
+    return response;
   };
 
   this.getHeader = function () {
@@ -103,18 +116,19 @@ export default function MkdSDK() {
     if (!token) {
       throw new Error("Token not found");
     }
-    const body = {
-      role: "admin",
-    };
     const headers = {
       "Content-Type": "application/json",
       "x-project": base64Encode,
       Authorization: "Bearer " + localStorage.getItem("token"),
     };
     const response = await axios
-      .post("https://reacttask.mkdlabs.com/v2/api/lambda/check", body, {
-        headers,
-      })
+      .post(
+        "https://reacttask.mkdlabs.com/v2/api/lambda/check",
+        role == "admin",
+        {
+          headers,
+        }
+      )
       .then((response) => response.status);
     if (response === 200) {
       return response;
