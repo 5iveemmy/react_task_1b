@@ -52,6 +52,15 @@ const AuthProvider = ({ children }) => {
 
   React.useEffect(() => {
     //TODO
+    const checkToken = async () => {
+      const isValid = await sdk.check(state.role);
+      if (!isValid) {
+        const role = localStorage.getItem("role") || "admin";
+        dispatch({ type: "LOGOUT" });
+        navigate(`/${role}/login`);
+      }
+    };
+    checkToken();
   }, []);
 
   return (
