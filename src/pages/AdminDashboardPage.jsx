@@ -13,8 +13,55 @@ import { useNavigate } from "react-router";
 import { AuthContext } from "../authContext";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { useRef } from "react";
+import { useDrag, useDrop } from "react-dnd";
 
 const LeaderBox = ({ text, name, number, image, avatar }) => {
+  const ref = useRef(null);
+  const [{ handlerId }, drop] = useDrop({
+    accept: ItemTypes.CARD,
+    collect(monitor) {
+      return {
+        handlerId: monitor.getHandlerId(),
+      };
+    },
+    hover(item, monitor) {
+      if (!ref.current) {
+        return;
+      }
+      const dragIndex = item.index;
+      const hoverIndex = index;
+      if (dragIndex === hoverIndex) {
+        return;
+      }
+      const hoverBoundingRect = ref.current?.getBoundingClientRect();
+      const hoverMiddleY =
+        (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+      const clientOffset = monitor.getClientOffset();
+      const hoverClientY = clientOffset.y - hoverBoundingRect.top;
+      if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
+        return;
+      }
+      if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
+        return;
+      }
+      moveCard(dragIndex, hoverIndex);
+      item.index = hoverIndex;
+    },
+  });
+  const [{ isDragging }, drag] = useDrag({
+    type: ItemTypes.CARD,
+    item: () => {
+      return { id, index };
+    },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
+
+  const opacity = isDragging ? 0 : 1;
+
+  drag(drop(ref));
   return (
     <div className="border-[#fff] w-full border p-4 rounded-2xl mt-4 border-opacity-50 flex justify-between items-center">
       <DndProvider backend={HTML5Backend}>
