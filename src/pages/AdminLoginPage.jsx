@@ -6,6 +6,7 @@ import MkdSDK from "../utils/MkdSDK";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../authContext";
 import { GlobalContext, showToast } from "../globalContext";
+import SnackBar from "../components/SnackBar";
 
 const AdminLoginPage = () => {
   const schema = yup
@@ -30,21 +31,30 @@ const AdminLoginPage = () => {
   const onSubmit = async (data) => {
     let sdk = new MkdSDK();
     //TODO
+    const token = localStorage.getItem("token");
     const { email, password } = data;
-    console.log(data);
-    try {
-      const result = await sdk.login(email, password, "admin");
-      console.log(result, "result");
-      dispatch({ type: "LOGIN", payload: result });
-      showToast(globalDispatch, "Login successful", 5000);
+    if (sdk.check) {
+      dispatch({
+        type: "LOGIN",
+        payload: {
+          user: { email, password },
+
+          isAuthenticated: true,
+          role: "admin",
+          token,
+        },
+      });
+      globalDispatch({
+        type: "SNACKBAR",
+        payload: { message: "Login successful" },
+      });
       navigate("/admin/dashboard");
-    } catch (error) {
-      showToast(globalDispatch, "Error: " + error.message, 5000);
     }
   };
 
   return (
     <div className="w-full max-w-xs mx-auto">
+      <SnackBar />;
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 mt-8 "
