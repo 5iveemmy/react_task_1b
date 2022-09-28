@@ -12,9 +12,19 @@ export default function MkdSDK() {
   this.setTable = function (table) {
     this._table = table;
   };
-  
+
   this.login = async function (email, password, role) {
     //TODO
+    return axios
+      .post("https://reacttask.mkdlabs.com/v2/api/lambda/login", {
+        email,
+        password,
+        role,
+      })
+      .then((response) => {
+        //store response.data in LocalStorage
+        localStorage.setItem("token", response.data.token);
+      });
   };
 
   this.getHeader = function () {
@@ -27,7 +37,7 @@ export default function MkdSDK() {
   this.baseUrl = function () {
     return this._baseurl;
   };
-  
+
   this.callRestAPI = async function (payload, method) {
     const header = {
       "Content-Type": "application/json",
@@ -55,7 +65,7 @@ export default function MkdSDK() {
           throw new Error(jsonGet.message);
         }
         return jsonGet;
-      
+
       case "PAGINATE":
         if (!payload.page) {
           payload.page = 1;
@@ -84,7 +94,7 @@ export default function MkdSDK() {
       default:
         break;
     }
-  };  
+  };
 
   this.check = async function (role) {
     //TODO
