@@ -184,6 +184,24 @@ const AdminDashboardPage = () => {
           like={item.like}
         />
       ))}
+      <div className="flex justify-center items-center gap-8 pt-12">
+        <button
+          className="flex justify-center items-center py-3 px-6 w-[128px] text-black bg-[#9bff00] rounded-[40px] "
+          onClick={() => {
+            setPage(page - 1);
+          }}
+        >
+          Previous
+        </button>
+        <button
+          className="flex justify-center items-center py-3 px-6 w-[128px] text-black bg-[#9bff00] rounded-[40px] "
+          onClick={() => {
+            setPage(page + 1);
+          }}
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };
