@@ -1,4 +1,5 @@
 import React, { useReducer } from "react";
+import { renderRoutes } from "./main";
 import MkdSDK from "./utils/MkdSDK";
 
 export const AuthContext = React.createContext();

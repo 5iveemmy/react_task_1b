@@ -119,7 +119,6 @@ export default function MkdSDK() {
       }),
     });
     const response = await data.json();
-
     return response;
   };
 
