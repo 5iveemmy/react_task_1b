@@ -15,25 +15,21 @@ export default function MkdSDK() {
 
   this.login = async function (email, password, role) {
     //TODO
-    this._email = email;
-    this._password = password;
-    this._role = role;
 
-    const rawData = await fetch(`${this._baseurl}/v2/api/lambda/login`, {
+    const data = await fetch(`${this._baseurl}/v2/api/lambda/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "x-project": base64Encode,
       },
       body: JSON.stringify({
-        email: this._email,
-        password: this._password,
-        role: this._role,
+        email,
+        password,
+        role,
       }),
     });
-    const data = await rawData.json();
-
-    return data;
+    const response = await data.json();
+    return response;
   };
 
   this.getHeader = function () {
@@ -111,8 +107,7 @@ export default function MkdSDK() {
 
   this.check = async function (role) {
     //TODO
-    this._role = role;
-    const rawData = await fetch(`${this._baseurl}/v2/api/lambda/check`, {
+    const data = await fetch(`${this._baseurl}/v2/api/lambda/check`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -120,12 +115,12 @@ export default function MkdSDK() {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
       body: JSON.stringify({
-        role: this._role,
+        role,
       }),
     });
-    const data = await rawData.json();
+    const response = await data.json();
 
-    return data;
+    return response;
   };
 
   return this;

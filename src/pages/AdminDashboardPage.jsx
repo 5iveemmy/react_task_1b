@@ -5,51 +5,49 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import MkdSDK from "../utils/MkdSDK";
 
-const LeaderBox = ({ title, username, like, photo }) => {
+const LeaderBox = ({ id, title, username, like, photo }) => {
   return (
     <div className="border-[#fff] w-full border p-4 rounded-2xl mt-4 border-opacity-50 flex justify-between items-center">
-      <DndProvider backend={HTML5Backend}>
-        <div className="flex items-center gap-6">
+      <div className="flex items-center gap-6">
+        <span>{id}</span> <img src={photo} alt="alt image" />
+        <p className="w-[364px]">{title}</p>
+        <div className="flex gap-2">
           <img src={photo} alt="alt image" />
-          <p className="w-[364px]">{title}</p>
-          <div className="flex gap-2">
-            <img src={photo} alt="alt image" />
-            <p>{username}</p>
-          </div>
+          <p>{username}</p>
         </div>
-        <div className="flex items-center gap-2">
-          <p>{like}</p>
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 20 20"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <g clip-path="url(#clip0_1735_1113)">
-              <path
-                d="M10.0085 3.75833V16.25"
-                stroke="#9BFF00"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M5.01929 8.76167L10.0001 3.74834L14.981 8.76167"
-                stroke="#9BFF00"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </g>
-            <defs>
-              <clipPath id="clip0_1735_1113">
-                <rect width="20" height="20" fill="white" />
-              </clipPath>
-            </defs>
-          </svg>
-        </div>
-      </DndProvider>
+      </div>
+      <div className="flex items-center gap-2">
+        <p>{like}</p>
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <g clip-path="url(#clip0_1735_1113)">
+            <path
+              d="M10.0085 3.75833V16.25"
+              stroke="#9BFF00"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M5.01929 8.76167L10.0001 3.74834L14.981 8.76167"
+              stroke="#9BFF00"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </g>
+          <defs>
+            <clipPath id="clip0_1735_1113">
+              <rect width="20" height="20" fill="white" />
+            </clipPath>
+          </defs>
+        </svg>
+      </div>
     </div>
   );
 };
@@ -166,6 +164,7 @@ const AdminDashboardPage = () => {
       </div>
       {list.map((item) => (
         <LeaderBox
+          id={item.id}
           photo={item.photo}
           title={item.title}
           username={item.username}
