@@ -1,20 +1,8 @@
 import React from "react";
-import imageOne from "../images/image1.png";
-import imageTwo from "../images/image2.png";
-import imageThree from "../images/image3.png";
-import imageFour from "../images/image4.png";
-import imageFive from "../images/image5.png";
-import avatarOne from "../images/avatar1.png";
-import avatarTwo from "../images/avatar2.png";
-import avatarThree from "../images/avatar3.png";
-import avatarFour from "../images/avatar4.png";
-import avatarFive from "../images/avatar5.png";
 import { useNavigate } from "react-router";
 import { AuthContext } from "../authContext";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { useRef } from "react";
-import { useDrag, useDrop } from "react-dnd";
 import MkdSDK from "../utils/MkdSDK";
 
 const LeaderBox = ({ title, username, like, photo }) => {
