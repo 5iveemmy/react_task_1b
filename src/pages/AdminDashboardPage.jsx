@@ -15,66 +15,22 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
+import MkdSDK from "../utils/MkdSDK";
 
-const LeaderBox = ({ text, name, number, image, avatar }) => {
-  const ref = useRef(null);
-  const [{ handlerId }, drop] = useDrop({
-    accept: ItemTypes.CARD,
-    collect(monitor) {
-      return {
-        handlerId: monitor.getHandlerId(),
-      };
-    },
-    hover(item, monitor) {
-      if (!ref.current) {
-        return;
-      }
-      const dragIndex = item.index;
-      const hoverIndex = index;
-      if (dragIndex === hoverIndex) {
-        return;
-      }
-      const hoverBoundingRect = ref.current?.getBoundingClientRect();
-      const hoverMiddleY =
-        (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
-      const clientOffset = monitor.getClientOffset();
-      const hoverClientY = clientOffset.y - hoverBoundingRect.top;
-      if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
-        return;
-      }
-      if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
-        return;
-      }
-      moveCard(dragIndex, hoverIndex);
-      item.index = hoverIndex;
-    },
-  });
-  const [{ isDragging }, drag] = useDrag({
-    type: ItemTypes.CARD,
-    item: () => {
-      return { id, index };
-    },
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
-    }),
-  });
-
-  const opacity = isDragging ? 0 : 1;
-
-  drag(drop(ref));
+const LeaderBox = ({ title, username, like, photo }) => {
   return (
     <div className="border-[#fff] w-full border p-4 rounded-2xl mt-4 border-opacity-50 flex justify-between items-center">
       <DndProvider backend={HTML5Backend}>
         <div className="flex items-center gap-6">
-          <img src={image} alt="alt image" />
-          <p className="w-[364px]">{text}</p>
+          <img src={photo} alt="alt image" />
+          <p className="w-[364px]">{title}</p>
           <div className="flex gap-2">
-            <img src={avatar} alt="alt image" />
-            <p>{name}</p>
+            <img src={photo} alt="alt image" />
+            <p>{username}</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <p>{number}</p>
+          <p>{like}</p>
           <svg
             width="20"
             height="20"
@@ -113,6 +69,26 @@ const LeaderBox = ({ text, name, number, image, avatar }) => {
 const AdminDashboardPage = () => {
   const { dispatch } = React.useContext(AuthContext);
   const navigate = useNavigate();
+  const [list, setList] = React.useState([]);
+  const [page, setPage] = React.useState(1);
+
+  let sdk = new MkdSDK();
+
+  const getData = () => {
+    sdk
+      .callRestAPI({ page: page, limit: 10 }, "GET")
+      .then((res) => {
+        setPage(res.page);
+        setList(res.list);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  React.useEffect(() => {
+    getData();
+  }, [page]);
 
   const handleLogout = () => {
     dispatch({
@@ -200,41 +176,14 @@ const AdminDashboardPage = () => {
           </svg>
         </div>
       </div>
-      <LeaderBox
-        image={imageOne}
-        avatar={avatarOne}
-        text="Rune raises $100,000 for marketing through NFT butterflies sale"
-        name="ninjanft"
-        number="254"
-      />
-      <LeaderBox
-        image={imageTwo}
-        avatar={avatarTwo}
-        text="The Cryptocurrency Trading Bible"
-        name="deniscrypto"
-        number="205"
-      />
-      <LeaderBox
-        image={imageThree}
-        avatar={avatarThree}
-        text="Designing our new company brand Meta"
-        name="meta_world98"
-        number="134"
-      />
-      <LeaderBox
-        image={imageFour}
-        avatar={avatarFour}
-        text="Connect media partners, earn exciting rewards for today"
-        name="kingdom43world"
-        number="99"
-      />
-      <LeaderBox
-        image={imageFive}
-        avatar={avatarFive}
-        text="Designing a more effective projects"
-        name="sjkj3987423kjbdfsf"
-        number="88"
-      />
+      {list.map((item) => (
+        <LeaderBox
+          photo={item.photo}
+          title={item.title}
+          username={item.username}
+          like={item.like}
+        />
+      ))}
     </div>
   );
 };

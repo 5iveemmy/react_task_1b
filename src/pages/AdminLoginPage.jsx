@@ -17,7 +17,7 @@ const AdminLoginPage = () => {
     .required();
 
   const { dispatch } = React.useContext(AuthContext);
-  const { dispatch: globalDispatch } = React.useContext(GlobalContext);
+  const { dispatch: toastDispatch } = React.useContext(GlobalContext);
   const navigate = useNavigate();
   const {
     register,
@@ -31,24 +31,17 @@ const AdminLoginPage = () => {
   const onSubmit = async (data) => {
     let sdk = new MkdSDK();
     //TODO
-    const token = localStorage.getItem("token");
-    const { email, password } = data;
-    if (sdk.check) {
+    const loginData = await sdk.login(data.email, data.password, "admin");
+    if (!loginData.error) {
+      localStorage.setItem("token", loginData.token);
+      localStorage.setItem("role", loginData.role);
+      localStorage.setItem("user", loginData);
       dispatch({
         type: "LOGIN",
-        payload: {
-          user: { email, password },
-
-          isAuthenticated: true,
-          role: "admin",
-          token,
-        },
       });
-      globalDispatch({
-        type: "SNACKBAR",
-        payload: { message: "Login successful" },
-      });
+      showToast(toastDispatch, "Login Successful");
       navigate("/admin/dashboard");
+    } else {
     }
   };
 

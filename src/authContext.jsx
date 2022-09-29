@@ -14,14 +14,12 @@ const reducer = (state, action) => {
   switch (action.type) {
     case "LOGIN":
       //TODO
-      localStorage.setItem("role", action.payload.role);
-      localStorage.setItem("isAuthenticated", action.payload.isAuthenticated);
       return {
         ...state,
-        isAuthenticated: action.payload.isAuthenticated,
-        user: action.payload.user,
-        token: action.payload.token,
-        role: action.payload.role,
+        isAuthenticated: true,
+        user: localStorage.getItem("user"),
+        token: localStorage.getItem("token"),
+        role: localStorage.getItem("role"),
       };
     case "LOGOUT":
       localStorage.clear();
@@ -52,15 +50,21 @@ const AuthProvider = ({ children }) => {
 
   React.useEffect(() => {
     //TODO
-    const checkToken = async () => {
-      const isValid = await sdk.check(state.role);
-      if (!isValid) {
-        const role = localStorage.getItem("role") || "admin";
-        dispatch({ type: "LOGOUT" });
-        navigate(`/${role}/login`);
-      }
-    };
-    checkToken();
+    const role = localStorage.getItem("role");
+    if (role) {
+      sdk
+        .check(role)
+        .then((res) => {
+          if (res.error) {
+            tokenExpireError(dispatch, "TOKEN_EXPIRED");
+          } else {
+            renderRoutes(role);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   }, []);
 
   return (

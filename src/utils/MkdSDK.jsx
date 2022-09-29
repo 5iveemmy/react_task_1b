@@ -1,10 +1,8 @@
-import axios from "axios";
-
 export default function MkdSDK() {
   this._baseurl = "https://reacttask.mkdlabs.com";
   this._project_id = "reacttask";
   this._secret = "d9hedycyv6p7zw8xi34t9bmtsjsigy5t7";
-  this._table = "";
+  this._table = "video";
   this._custom = "";
   this._method = "";
 
@@ -17,27 +15,25 @@ export default function MkdSDK() {
 
   this.login = async function (email, password, role) {
     //TODO
-    const response = await axios
-      .post(
-        `${this._baseurl}/v2/api/lambda/login`,
-        {
-          email,
-          password,
-          role,
-        },
-        {
-          headers: {
-            "content-type": "application/json",
-            "x-project": base64Encode,
-          },
-        }
-      )
-      .then((response) => {
-        //store response.data in LocalStorage
-        localStorage.setItem("token", response.data.token);
-      });
+    this._email = email;
+    this._password = password;
+    this._role = role;
 
-    return response;
+    const rawData = await fetch(`${this._baseurl}/v2/api/lambda/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-project": base64Encode,
+      },
+      body: JSON.stringify({
+        email: this._email,
+        password: this._password,
+        role: this._role,
+      }),
+    });
+    const data = await rawData.json();
+
+    return data;
   };
 
   this.getHeader = function () {
@@ -61,9 +57,9 @@ export default function MkdSDK() {
     switch (method) {
       case "GET":
         const getResult = await fetch(
-          this._baseurl + `/v1/api/rest/${this._table}/GET`,
+          `${this._baseurl}/v1/api/rest/${this._table}/PAGINATE`,
           {
-            method: "post",
+            method: "POST",
             headers: header,
             body: JSON.stringify(payload),
           }
@@ -75,6 +71,10 @@ export default function MkdSDK() {
         }
 
         if (getResult.status === 403) {
+          throw new Error(jsonGet.message);
+        }
+
+        if (getResult.status === 404) {
           throw new Error(jsonGet.message);
         }
         return jsonGet;
@@ -111,26 +111,21 @@ export default function MkdSDK() {
 
   this.check = async function (role) {
     //TODO
-    // Get token from LocalStorage
-    const token = localStorage.getItem("token");
-    if (!token) {
-      throw new Error("Token not found");
-    }
-    const headers = {
-      "Content-Type": "application/json",
-      "x-project": base64Encode,
-      Authorization: "Bearer " + localStorage.getItem("token"),
-    };
-    const response = await axios
-      .post(`${this._baseurl}/v2/api/lambda/check`, role, {
-        headers,
-      })
-      .then((response) => response.status);
-    if (response === 200) {
-      return response;
-    } else {
-      return false;
-    }
+    this._role = role;
+    const rawData = await fetch(`${this._baseurl}/v2/api/lambda/check`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-project": base64Encode,
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+      body: JSON.stringify({
+        role: this._role,
+      }),
+    });
+    const data = await rawData.json();
+
+    return data;
   };
 
   return this;
