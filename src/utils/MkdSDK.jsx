@@ -122,7 +122,7 @@ export default function MkdSDK() {
       Authorization: "Bearer " + localStorage.getItem("token"),
     };
     const response = await axios
-      .post(`${this._baseurl}/v2/api/lambda/check`, role == "admin", {
+      .post(`${this._baseurl}/v2/api/lambda/check`, role, {
         headers,
       })
       .then((response) => response.status);
