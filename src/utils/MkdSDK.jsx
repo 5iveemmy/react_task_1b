@@ -19,7 +19,7 @@ export default function MkdSDK() {
     //TODO
     const response = await axios
       .post(
-        "https://reacttask.mkdlabs.com/v2/api/lambda/login",
+        `${this._baseurl}/v2/api/lambda/login`,
         {
           email,
           password,
@@ -112,7 +112,7 @@ export default function MkdSDK() {
   this.check = async function (role) {
     //TODO
     // Get token from LocalStorage
-    const token = await localStorage.getItem("token");
+    const token = localStorage.getItem("token");
     if (!token) {
       throw new Error("Token not found");
     }
@@ -122,13 +122,9 @@ export default function MkdSDK() {
       Authorization: "Bearer " + localStorage.getItem("token"),
     };
     const response = await axios
-      .post(
-        "https://reacttask.mkdlabs.com/v2/api/lambda/check",
-        role == "admin",
-        {
-          headers,
-        }
-      )
+      .post(`${this._baseurl}/v2/api/lambda/check`, role == "admin", {
+        headers,
+      })
       .then((response) => response.status);
     if (response === 200) {
       return response;
